@@ -119,18 +119,27 @@ const authenticate = async(req, res, next) => {
     }
 }
 
+//allow cross origin sharing
+app.use(function(req, res, next){
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
 //app.use(authenticate);
 app.get('/', function(req, res){
     res.send("Home Page");
 });
 
+
+//get credentials and tokens all that good stuff
 app.post('/', function(req, res){
     //get access token
     //store in database
     console.log("hit");
     try {
-        console.log(req.body);
-        res.send(req.body);
+        console.log(req.body.firstName);
+        res.send(req.body.firstName);
     } catch(err){
         console.log(err);
         res.send("error");

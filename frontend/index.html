@@ -21,14 +21,14 @@
                     //optional parameters
                     var otherParam = {
                         headers : {
-                            "content-type":"application/json; charset=UTF-8"
+                            "content-type":"text/plain"
                         },
                         body: bod,
-                        mode: "no-cors",
+                        mode: "cors",
                         method: "POST",
-                    }
+                    };
 
-                    fetch(urls, otherParam).then(data=>{return data.json()}).catch(error=>console.log(error));
+                    fetch(urls, otherParam).then(data=>console.log(data)).catch(error=>console.log(error));
                     
                 });
             });
