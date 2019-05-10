@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+            <script
+            src="https://code.jquery.com/jquery-2.2.4.js"
+            integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+            crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <button id="messages">google messages</button>
+
+        <script>
+            $(document).ready(function(){
+                var bod = {
+                    firstName : "daniel",
+                    lastName : "acevedo",
+                };
+                //api url 
+                var urls = "http://localhost:5000/crawler-90244/us-central1/api";
+                $("button#messages").click(function(){
+                    //optional parameters
+                    var otherParam = {
+                        headers : {
+                            "content-type":"application/json; charset=UTF-8"
+                        },
+                        body: bod,
+                        mode: "no-cors",
+                        method: "POST",
+                    }
+
+                    fetch(urls, otherParam).then(data=>{return data.json()}).catch(error=>console.log(error));
+                    
+                });
+            });
+        </script>
+    </body>
+</html>
