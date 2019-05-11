@@ -10,38 +10,15 @@ const firebaseApp = admin.initializeApp(
     jsonContent,
 );
 
+var gmailFunctions = require('./gmail');
 var path = require('path');
 var cors = require('cors');
 const express = require('express');
-const readline = require('readline');
-const {google} = require('googleapis');
 const axios = require('axios');
 var bodyParser = require('body-parser');
 //var data = require("./data");
 
 const app = express();
-
-//const dbs = require("./data");
-
-const SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"];
-
-const TOKEN_PATH = 'token.json';
-
-
-/*create an Oauth2 client with the given credentials and then execute the given 
-callback function
-*/
-function authorize(credentials, callback){
-    const {client_secret, client_id, redirect_uris} = credentials.installed;
-    const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
-
-    //check if we have previously stored a token
-    fs.readFile(TOKEN_PATH, (err, token) => {
-        if(err) return getNewToken(oAuth2Client, callback);
-        oAuth2Client.setCredentials(JSON.parse(token));
-        callback(oAuth2Client);
-    });
-}
 
 
 //set static path 
@@ -50,7 +27,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 //allow options on all resources
-app.options('*', cors())
+app.options('*', cors());
 
 //allow cross origin sharing
 app.use(function(req, res, next){
