@@ -6,16 +6,17 @@ var contents = fs.readFileSync("credentials.json");
 // Define to JSON type
 var jsonContent = JSON.parse(contents);
 
-
 const firebaseApp = admin.initializeApp(
     jsonContent,
 );
 
 var path = require('path');
+var cors = require('cors');
 const express = require('express');
 const readline = require('readline');
 const {google} = require('googleapis');
 const axios = require('axios');
+var bodyParser = require('body-parser');
 //var data = require("./data");
 
 const app = express();
@@ -42,87 +43,19 @@ function authorize(credentials, callback){
     });
 }
 
-const getData = async url => {
-    try {
-        console.log("in try");
-        const response = await axios.get(url);
-        const data = response.data;
-        console.log(data);
-    } catch(error){
-        console.log(error);
-    }
-}
-
-/*get and store new token after prompting for user authorization
-and then execute the given callback with the authorized OAuth2 client
-*/
-function getNewToken(oAuth2Client, callback){
-    const authUrl = oAuth2Client.generateAuthUrl({
-        access_type: 'offline',
-        scope: SCOPES,
-    });
-
-    console.log('Authorize this app by visiting this url:', authUrl);
-
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-    });
-
-    rl.question('Enter the code from that page here: ', (code) => {
-        rl.close();
-        oAuth2Client.getToken(code, (err, token) => {
-            if(err) return console.error('Error retrieving access token', err);
-            console.log('Token stored to', TOKEN_PATH);
-        });
-        callback(oAuth2Client);
-    });
-
-}
-
-function listLabels(auth) {
-    const gmail = google.gmail({version: 'v1', auth});
-    gmail.users.labels.list({
-        userId: 'me',
-    }, (err, res) => {
-        if(err) return console.log('The Api returned an error: ' + err);
-        const labels = res.data.labels;
-        if(labels.length) {
-            console.log('Labels:');
-            labels.forEach((label) => {
-                console.log(`- ${label.name}`);
-            });
-        } else {
-            console.log('No labels found.');
-        }
-    });
-}
 
 //set static path 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
 
-const authenticate = async(req, res, next) => {
-    if(!req.headers.authorization || !req.headers.startsWith('Bearer')){
-        res.status(403).send('Unauthorized');
-        return;
-    }
-    const idToken = await req.headers.authorization.split('Bearer ')[1];
-    try { 
-        const decodeIdToken = admin.auth().verifyIdToken(idToken);
-        req.user = decodeIdToken;
-        next();
-        return;
-    }
-    catch(e) {
-        res.status(403).send('Unauthorized');
-        return;
-    }
-}
+//allow options on all resources
+app.options('*', cors())
 
 //allow cross origin sharing
 app.use(function(req, res, next){
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, application/json");
     next();
 });
 
@@ -137,13 +70,13 @@ app.post('/', function(req, res){
     //get access token
     //store in database
     console.log("hit");
-    try {
-        console.log(req.body.firstName);
-        res.send(req.body.firstName);
-    } catch(err){
-        console.log(err);
-        res.send("error");
-    }
+    var ob = {
+        "firsts": "Nones",
+        "last": "last",
+    };
+    ob.firsts = req.body.a;
+    console.log(req.body.b);
+    res.json(ob);
     
 });
 

@@ -10,10 +10,10 @@
         <button id="messages">google messages</button>
 
         <script>
-            $(document).ready(function(){
+            $(document).ready(function() {
                 var bod = {
-                    firstName : "daniel",
-                    lastName : "acevedo",
+                    a : "daniel",
+                    b : "acevedo",
                 };
                 //api url 
                 var urls = "http://localhost:5000/crawler-90244/us-central1/api";
@@ -21,15 +21,14 @@
                     //optional parameters
                     var otherParam = {
                         headers : {
-                            "content-type":"text/plain"
+                            "Content-Type":"application/json"
                         },
-                        body: bod,
+                        body: JSON.stringify(bod),
                         mode: "cors",
                         method: "POST",
                     };
-
-                    fetch(urls, otherParam).then(data=>console.log(data)).catch(error=>console.log(error));
-                    
+                    //fetch(urls, otherParam).then(data=>console.log(data)).catch(error=>console.log(error));
+                    fetch(urls, otherParam).then(response => response.json()).catch(error=>console.log(error));
                 });
             });
         </script>
