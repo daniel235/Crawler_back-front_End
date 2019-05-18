@@ -5,9 +5,12 @@
             src="https://code.jquery.com/jquery-2.2.4.js"
             integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
             crossorigin="anonymous"></script>
+            <script type="text/javascript" src="../backend/functions/outlook.js"></script>
     </head>
     <body>
         <button id="messages">google messages</button>
+        <br>
+        <button id="outlook">Outlook</button>
 
         <script>
             $(document).ready(function() {
@@ -30,6 +33,11 @@
                     //fetch(urls, otherParam).then(data=>console.log(data)).catch(error=>console.log(error));
                     fetch(urls, otherParam).then(response => response.json()).catch(error=>console.log(error));
                 });
+
+                $("button#outlook").click(function(){
+                    outlookAuth();
+                });
+                
             });
         </script>
     </body>
