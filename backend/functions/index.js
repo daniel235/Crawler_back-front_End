@@ -110,10 +110,10 @@ app.get('/outlook', function(req, res) {
     var error = null;
     var token = null;
     axios.post(urls, qs.stringify(requestBody), config).then((response) => {
-        token = response.data;
+        token = response.data.access_token;
+        console.log(token);
     }).catch(err=>console.log(err));
     
-    console.log(token);
     res.send("complete");
 });
 
