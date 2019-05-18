@@ -10,14 +10,18 @@ const firebaseApp = admin.initializeApp(
     jsonContent,
 );
 
+
 //var gmailFunctions = require('./gmail');
 var path = require('path');
 var cors = require('cors');
 const express = require('express');
 const axios = require('axios');
+var request = require('request');
 var bodyParser = require('body-parser');
 //var data = require("./data");
 var outlook = require("./outlook");
+var qs = require('qs');
+
 
 const app = express();
 
@@ -88,14 +92,26 @@ app.get('/outlook', function(req, res) {
     var authCode = req.query.code;
     console.log(authCode);
     //getting access token
-    urls = "https://login.microsoftonline.com/common/oauth2/v2.0/token/grant_type=authorization_code&code=" + String(authCode) + "&redirect_uri=http://localhost:5000/crawler-90244/us-central1/api/outlook&client_id=2d330020-d8e1-4e03-b098-7928c37cbc1a&client_secret=_Ra7*1I4pcQ]GW5GesFSx[7Kkz8K=SiW";
-    var head = {
-        "Content-Type": "application/x-www-form-urlencoded"
-    };
+    urls = "https://login.microsoftonline.com/common/oauth2/v2.0/token/";
+    console.log(urls);
+    const config = {
+        headers : {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+    }
+    var sec = "mXZUVz:l=PUcxQH:OBGtH.BKbBRF2121";
+    const requestBody = {
+        grant_type : "authorization_code",
+        code : authCode,
+        redirect_uri : "http://localhost:5000/crawler-90244/us-central1/api/outlook",
+        client_id: "2d330020-d8e1-4e03-b098-7928c37cbc1a",
+        client_secret: sec,
+    }
     var error = null;
-    axios.post(urls, {headers: head}).then((response) => {
-        var token = response.data;
-    }).catch(err=>error);
+    var token = null;
+    axios.post(urls, qs.stringify(requestBody), config).then((response) => {
+        token = response.data;
+    }).catch(err=>console.log(err));
     
     console.log(token);
     res.send("complete");
