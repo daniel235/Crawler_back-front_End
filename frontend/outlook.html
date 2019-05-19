@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script
+            src="https://code.jquery.com/jquery-2.2.4.js"
+            integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+            crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <button id="message">Get Messages</button>
+        <script>
+            $(document).ready(function(){
+                var urls = "http://localhost:5000/crawler-90244/us-central1/api/otmessages";
+                $("#message").click(function(){
+                    var otherParam = {
+                        headers : {
+                            "Content-Type":"application/json"
+                        },
+                        mode: "cors",
+                        method: "GET",
+                    };
+
+                    fetch(urls, otherParam).then(response => console.log(response.json())).catch(err=>console.log(err));
+                });
+            });
+        </script>
+    </body>
+</html>

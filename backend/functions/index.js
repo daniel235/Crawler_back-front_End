@@ -1,6 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 var fs = require("fs");
+var path = require("path");
 //app stuff
 var contents = fs.readFileSync("credentials.json");
 // Define to JSON type
@@ -24,6 +25,11 @@ var qs = require('qs');
 
 
 const app = express();
+
+
+//access tokens
+outlookToken = null;
+gmailToken = null;
 
 
 //set static path 
@@ -77,13 +83,22 @@ app.get('/api', function(req, res){
     res.send("check");
 });
 
-app.get('/messages', function(req, res) {
-    //get request token 
-    const headers = req.headers;
-    console.log(headers);
-    //get user from body
-    
-    res.send("complete");
+
+app.get('/otmessages', function(req, res) {
+    url = "https://graph.microsoft.com/v1.0/me/mailfolders/inbox/messages?$top=10";
+    auth = "Bearer " + outlookToken;
+    const config = {
+        headers: {
+            authorization: auth,
+        },
+    }
+    var messages = null;
+    axios.get(url, config).then((response) => {
+        messages = response.data.value;
+        console.log(messages);
+    }).catch(err=>console.log(err));
+
+    res.send(messages);
 });
 
 //get outlook api access
@@ -111,18 +126,13 @@ app.get('/outlook', function(req, res) {
     var token = null;
     axios.post(urls, qs.stringify(requestBody), config).then((response) => {
         token = response.data.access_token;
+        outlookToken = token;
         console.log(token);
     }).catch(err=>console.log(err));
     
-    res.send("complete");
+    res.sendFile(path.resolve("../../frontend/outlook.html"));
 });
 
-app.post('/outlook', function(req, res){
-    console.log("in post");
-    var Token = null;
-    Token = req.access_token;
-    console.log(Token);
-});
 
 
 exports.api = functions.https.onRequest(app);
