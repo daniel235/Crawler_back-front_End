@@ -90,11 +90,11 @@ app.get('/otmessages', function(req, res) {
     const config = {
         headers: {
             authorization: auth,
-        },
+        }
     }
     var messages = null;
     axios.get(url, config).then((response) => {
-        messages = response.data.value;
+        messages = response.data.value
         console.log(messages);
     }).catch(err=>console.log(err));
 
